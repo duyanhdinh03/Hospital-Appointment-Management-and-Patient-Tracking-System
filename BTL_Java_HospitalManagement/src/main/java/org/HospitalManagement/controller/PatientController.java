@@ -2,7 +2,7 @@ package org.HospitalManagement.controller;
 
 import org.HospitalManagement.dao.PatientDAO;
 import org.HospitalManagement.model.Patient;
-import org.HospitalManagement.view.PatientView;
+import org.HospitalManagement.view.DoctorView;
 
 import javax.swing.event.ListSelectionListener;
 import java.awt.event.ActionEvent;
@@ -11,10 +11,10 @@ import java.util.List;
 
 public class PatientController {
     private PatientDAO patientDAO;
-    private PatientView patientView;
+    private DoctorView doctorView;
 
-    public PatientController(PatientView patientView) {
-        this.patientView = patientView;
+    public PatientController(DoctorView patientView) {
+        this.doctorView = patientView;
         patientDAO = new PatientDAO();
 
         patientView.addPatientAddListener(new AddPatientListener());
@@ -28,20 +28,20 @@ public class PatientController {
 
     public void showPatientView(){
         List<Patient> patientList = patientDAO.getListPatients();
-        patientView.setVisible(true);
-        patientView.showPatientList(patientList);
+        doctorView.setVisible(true);
+        doctorView.showPatientList(patientList);
     }
 
     //Button Add
 
     class AddPatientListener implements ActionListener{
         public void actionPerformed(ActionEvent e) {
-            Patient patient = patientView.getPatientInfo();
+            Patient patient = doctorView.getPatientInfo();
             if(patient != null){
                 patientDAO.add(patient);
-                patientView.showPatient(patient);
-                patientView.showPatientList(patientDAO.getListPatients());
-                patientView.showMessage("Thêm thành công!!",false);
+                doctorView.showPatient(patient);
+                doctorView.showPatientList(patientDAO.getListPatients());
+                doctorView.showMessage("Thêm thành công!!",false);
             }
         }
     }
@@ -50,12 +50,12 @@ public class PatientController {
 
     class EditPatientListener implements ActionListener{
         public void actionPerformed(ActionEvent e) {
-            Patient patient = patientView.getPatientInfo();
+            Patient patient = doctorView.getPatientInfo();
             if (patient != null) {
                 patientDAO.edit(patient);
-                patientView.showPatient(patient);
-                patientView.showPatientList(patientDAO.getListPatients());
-                patientView.showMessage("Cập nhật thành công!",false);
+                doctorView.showPatient(patient);
+                doctorView.showPatientList(patientDAO.getListPatients());
+                doctorView.showMessage("Cập nhật thành công!",false);
             }
         }
     }
@@ -64,12 +64,12 @@ public class PatientController {
 
     class DeletePatientListener implements ActionListener{
         public void actionPerformed(ActionEvent e) {
-             Patient patient = patientView.getPatientInfo();
+             Patient patient = doctorView.getPatientInfo();
              if (patient != null) {
                  patientDAO.delete(patient);
-                 patientView.clearPatientInfo();
-                 patientView.showPatientList(patientDAO.getListPatients());
-                 patientView.showMessage("Xóa thành công !!",false);
+                 doctorView.clearPatientInfo();
+                 doctorView.showPatientList(patientDAO.getListPatients());
+                 doctorView.showMessage("Xóa thành công !!",false);
              }
         }
     }
@@ -78,7 +78,7 @@ public class PatientController {
 
     class ClearPatientListener implements ActionListener{
         public void actionPerformed(ActionEvent e) {
-            patientView.clearPatientInfo();
+            doctorView.clearPatientInfo();
         }
     }
 
@@ -87,7 +87,7 @@ public class PatientController {
     class SortPatientAddressListener implements ActionListener{
         public void actionPerformed(ActionEvent e) {
             patientDAO.sortPatientsByAddress(patientDAO.getListPatients());
-            patientView.showPatientList(patientDAO.getListPatients());
+            doctorView.showPatientList(patientDAO.getListPatients());
         }
     }
 
@@ -96,13 +96,13 @@ public class PatientController {
     class SortPatientNameListener implements ActionListener{
         public void actionPerformed(ActionEvent e) {
             patientDAO.sortPatientsByName(patientDAO.getListPatients());
-            patientView.showPatientList(patientDAO.getListPatients());
+            doctorView.showPatientList(patientDAO.getListPatients());
         }
     }
 
     class ListPatientSelectionListener implements ActionListener{
         public void actionPerformed(ActionEvent e) {
-            patientView.fillPatientFromSelectedRow();
+            doctorView.fillPatientFromSelectedRow();
         }
     }
 

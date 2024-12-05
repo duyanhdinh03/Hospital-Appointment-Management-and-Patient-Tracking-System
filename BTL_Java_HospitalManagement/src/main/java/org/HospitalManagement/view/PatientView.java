@@ -1,295 +1,178 @@
 package org.HospitalManagement.view;
 
-import org.HospitalManagement.model.Patient;
-
 import javax.swing.*;
-import javax.swing.event.ListSelectionListener;
-import javax.swing.table.DefaultTableModel;
 import java.awt.*;
+import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
-import java.util.List;
 
 public class PatientView extends JFrame {
-    private JTextField txtId, txtName, txtDob, txtAddress, txtPhone;
-    private JComboBox<String> cmbGender;
-    private JButton btnAdd, btnEdit, btnDelete, btnClear, btnSortByName, btnSortByAddress;
-    private JTable tblPatients;
-    private JLabel lblMessage;
-
-    // Cột bảng bệnh nhân
-    private String[] columnNames = {"ID", "Name", "Date of Birth", "Address", "Phone", "Gender"};
-    private DefaultTableModel tableModel;
+    private JPanel contentPanel;
+    private JMenuBar menuBar;
+    private JTable appointmentTable;
+    private JLabel loginInfoLabel;
+    private JPanel buttonPanel;
+    private JPanel dataGridPanel;
 
     public PatientView() {
+        // Setup main window
         setTitle("Patient Management");
+        setSize(900, 600);
         setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
-        setSize(800, 500);
-        setLocationRelativeTo(null);
         setLayout(new BorderLayout());
 
-        JPanel panelForm = createFormPanel();
-        JPanel panelButtons = createButtonPanel();
-        JScrollPane scrollPaneTable = createTablePanel();
+        // Setup the navigation bar (Menu)
+        setupMenuBar();
 
-        lblMessage = new JLabel(" ");
-        lblMessage.setForeground(Color.RED);
-        lblMessage.setHorizontalAlignment(SwingConstants.CENTER);
+        // Display login info (role)
+        displayLoginInfo();
 
-        add(panelForm, BorderLayout.NORTH);
-        add(scrollPaneTable, BorderLayout.CENTER);
-        add(panelButtons, BorderLayout.SOUTH);
-        add(lblMessage, BorderLayout.PAGE_END);
+        // Main content panel for buttons and data grid
+        contentPanel = new JPanel();
+        contentPanel.setLayout(new BorderLayout());
 
-        setVisible(true);
+        // Setup function buttons (main operations)
+        setupFunctionButtons();
+
+        // Add the content panel to the frame
+        add(contentPanel, BorderLayout.CENTER);
     }
 
-    /**
-     * Tạo panel chứa form nhập thông tin bệnh nhân
-     */
-    private JPanel createFormPanel() {
-        JPanel panelForm = new JPanel(new GridBagLayout());
-        GridBagConstraints gbc = new GridBagConstraints();
-        gbc.insets = new Insets(5, 5, 5, 5);
+    private void setupMenuBar() {
+        menuBar = new JMenuBar();
 
-        // Khởi tạo các thành phần
-        JLabel lblId = new JLabel("ID:");
-        JLabel lblName = new JLabel("Name:");
-        JLabel lblDob = new JLabel("Date of Birth:");
-        JLabel lblAddress = new JLabel("Address:");
-        JLabel lblPhone = new JLabel("Phone:");
-        JLabel lblGender = new JLabel("Gender:");
-
-        txtId = new JTextField(10);
-        txtId.setEditable(false); // Không cho phép chỉnh sửa ID
-        txtName = new JTextField(15);
-        txtDob = new JTextField(10);
-        txtAddress = new JTextField(20);
-        txtPhone = new JTextField(15);
-        cmbGender = new JComboBox<>(new String[]{"Male", "Female", "Other"});
-
-        // Thêm các thành phần vào panelForm
-        gbc.anchor = GridBagConstraints.WEST;
-
-        // ID
-        gbc.gridx = 0;
-        gbc.gridy = 0;
-        panelForm.add(lblId, gbc);
-
-        gbc.gridx = 1;
-        panelForm.add(txtId, gbc);
-
-        // Name
-        gbc.gridx = 0;
-        gbc.gridy = 1;
-        panelForm.add(lblName, gbc);
-
-        gbc.gridx = 1;
-        panelForm.add(txtName, gbc);
-
-        // DOB
-        gbc.gridx = 0;
-        gbc.gridy = 2;
-        panelForm.add(lblDob, gbc);
-
-        gbc.gridx = 1;
-        panelForm.add(txtDob, gbc);
-
-        // Address
-        gbc.gridx = 0;
-        gbc.gridy = 3;
-        panelForm.add(lblAddress, gbc);
-
-        gbc.gridx = 1;
-        panelForm.add(txtAddress, gbc);
-
-        // Phone
-        gbc.gridx = 0;
-        gbc.gridy = 4;
-        panelForm.add(lblPhone, gbc);
-
-        gbc.gridx = 1;
-        panelForm.add(txtPhone, gbc);
-
-        // Gender
-        gbc.gridx = 0;
-        gbc.gridy = 5;
-        panelForm.add(lblGender, gbc);
-
-        gbc.gridx = 1;
-        panelForm.add(cmbGender, gbc);
-
-        return panelForm;
-    }
-
-    /**
-     * Tạo panel chứa các nút chức năng
-     */
-    private JPanel createButtonPanel() {
-        JPanel panelButtons = new JPanel(new FlowLayout(FlowLayout.CENTER, 10, 10));
-
-        btnAdd = new JButton("Add");
-        btnEdit = new JButton("Edit");
-        btnDelete = new JButton("Delete");
-        btnClear = new JButton("Clear");
-        btnSortByName = new JButton("Sort By Name");
-        btnSortByAddress = new JButton("Sort By Address");
-
-        // Disable Edit và Delete ban đầu
-        btnEdit.setEnabled(false);
-        btnDelete.setEnabled(false);
-
-        // Thêm các nút vào panelButtons
-        panelButtons.add(btnAdd);
-        panelButtons.add(btnEdit);
-        panelButtons.add(btnDelete);
-        panelButtons.add(btnClear);
-        panelButtons.add(btnSortByName);
-        panelButtons.add(btnSortByAddress);
-
-        return panelButtons;
-    }
-
-    public void showPatient(Patient patient) {
-        txtId.setText("" + patient.getPatientID());
-        txtName.setText(patient.getName());
-        txtDob.setText(patient.getDob().toString());
-        txtAddress.setText(patient.getAddress());
-        cmbGender.setSelectedItem(patient.getGender());
-        txtPhone.setText(patient.getPhone());
-
-        btnEdit.setEnabled(true);
-        btnDelete.setEnabled(true);
-
-        btnAdd.setEnabled(false);
-    }
-    /**
-     * Tạo bảng hiển thị danh sách bệnh nhân
-     */
-    private JScrollPane createTablePanel() {
-        tableModel = new DefaultTableModel(columnNames, 0);
-        tblPatients = new JTable(tableModel);
-        tblPatients.setSelectionMode(ListSelectionModel.SINGLE_SELECTION);
-
-        return new JScrollPane(tblPatients);
-    }
-
-    /**
-     * Hiển thị thông báo
-     */
-    public void showMessage(String message, boolean isError) {
-        lblMessage.setText(message);
-        lblMessage.setForeground(isError ? Color.RED : Color.GREEN);
-    }
-
-    /**
-     * Hiển thị danh sách bệnh nhân lên bảng
-     */
-    public void showPatientList(List<Patient> patientList) {
-        tableModel.setRowCount(0); // Xóa dữ liệu cũ
-        for (Patient patient : patientList) {
-            tableModel.addRow(new Object[]{
-                    patient.getPatientID(),
-                    patient.getName(),
-                    patient.getDob(),
-                    patient.getAddress(),
-                    patient.getPhone(),
-                    patient.getGender()
-            });
-        }
-    }
-
-    /**
-     * Điền thông tin bệnh nhân từ hàng được chọn
-     */
-    public void fillPatientFromSelectedRow() {
-        int row = tblPatients.getSelectedRow();
-        if (row >= 0) {
-            txtId.setText(tblPatients.getValueAt(row, 0).toString());
-            txtName.setText(tblPatients.getValueAt(row, 1).toString());
-            txtDob.setText(tblPatients.getValueAt(row, 2).toString());
-            txtAddress.setText(tblPatients.getValueAt(row, 3).toString());
-            txtPhone.setText(tblPatients.getValueAt(row, 4).toString());
-            cmbGender.setSelectedItem(tblPatients.getValueAt(row, 5).toString());
-
-            // Enable Edit và Delete, Disable Add
-            btnEdit.setEnabled(true);
-            btnDelete.setEnabled(true);
-            btnAdd.setEnabled(false);
-        }
-    }
-
-    /**
-     * Lấy thông tin bệnh nhân từ form
-     */
-    public Patient getPatientInfo() {
-        try {
-            String name = txtName.getText().trim();
-            String dob = txtDob.getText().trim();
-            String address = txtAddress.getText().trim();
-            String phone = txtPhone.getText().trim();
-            String gender = (String) cmbGender.getSelectedItem();
-
-            if (name.isEmpty() || dob.isEmpty() || address.isEmpty() || phone.isEmpty()) {
-                throw new IllegalArgumentException("All fields except ID are required!");
+        // Menu
+        JMenu menu = new JMenu("Chức năng");
+        JMenuItem changePasswordItem = new JMenuItem("Đổi mật khẩu");
+        changePasswordItem.addActionListener(new ActionListener() {
+            public void actionPerformed(ActionEvent e) {
+                // Show change password dialog or form
+                showChangePasswordDialog();
             }
+        });
 
-            Patient patient = new Patient();
-            if (!txtId.getText().isEmpty()) {
-                patient.setPatientID(Integer.parseInt(txtId.getText()));
+        JMenuItem logoutItem = new JMenuItem("Đăng xuất");
+        logoutItem.addActionListener(new ActionListener() {
+            public void actionPerformed(ActionEvent e) {
+                // Handle logout logic here
+                logout();
             }
-            patient.setName(name);
-            patient.setDob(java.sql.Date.valueOf(dob)); // Chuyển String sang Date
-            patient.setAddress(address);
-            patient.setPhone(phone);
-            patient.setGender(gender);
+        });
 
-            return patient;
-        } catch (Exception e) {
-            showMessage(e.getMessage(), true);
-            return null;
-        }
+        menu.add(changePasswordItem);
+        menu.add(logoutItem);
+        menuBar.add(menu);
+        setJMenuBar(menuBar);
     }
 
-    public void clearPatientInfo() {
-        txtId.setText("");
-        txtName.setText("");
-        txtDob.setText("");
-        txtAddress.setText("");
-        txtPhone.setText("");
-        cmbGender.setSelectedIndex(0);
-
-        // Enable Add, Disable Edit và Delete
-        btnAdd.setEnabled(true);
-        btnEdit.setEnabled(false);
-        btnDelete.setEnabled(false);
+    private void displayLoginInfo() {
+        // Show user role (currently logged in)
+        loginInfoLabel = new JLabel("Bạn đang đăng nhập với quyền: Bệnh nhân", JLabel.CENTER);
+        loginInfoLabel.setFont(new Font("Arial", Font.BOLD, 16));
+        add(loginInfoLabel, BorderLayout.NORTH);
     }
 
+    private void setupFunctionButtons() {
+        buttonPanel = new JPanel();
+        buttonPanel.setLayout(new BoxLayout(buttonPanel, BoxLayout.Y_AXIS));
 
-    public void addPatientAddListener(ActionListener listener) {
-        btnAdd.addActionListener(listener);
+        // Buttons for main operations
+        JButton viewAppointmentsButton = new JButton("Xem lịch khám");
+        JButton bookAppointmentButton = new JButton("Đặt lịch khám");
+        JButton cancelOrRescheduleButton = new JButton("Gửi yêu cầu hủy/dời lịch");
+        JButton rateDoctorButton = new JButton("Đánh giá bác sĩ");
+
+        buttonPanel.add(viewAppointmentsButton);
+        buttonPanel.add(Box.createRigidArea(new Dimension(0, 10))); // Add spacing between buttons
+        buttonPanel.add(bookAppointmentButton);
+        buttonPanel.add(Box.createRigidArea(new Dimension(0, 10)));
+        buttonPanel.add(cancelOrRescheduleButton);
+        buttonPanel.add(Box.createRigidArea(new Dimension(0, 10)));
+        buttonPanel.add(rateDoctorButton);
+
+        // Add the button panel to the content panel
+        contentPanel.add(buttonPanel, BorderLayout.WEST);
+
+        // Add action listeners for buttons
+        viewAppointmentsButton.addActionListener(new ActionListener() {
+            public void actionPerformed(ActionEvent e) {
+                showAppointments();
+            }
+        });
+
+        bookAppointmentButton.addActionListener(new ActionListener() {
+            public void actionPerformed(ActionEvent e) {
+                bookAppointment();
+            }
+        });
+
+        cancelOrRescheduleButton.addActionListener(new ActionListener() {
+            public void actionPerformed(ActionEvent e) {
+                handleCancelOrReschedule();
+            }
+        });
+
+        rateDoctorButton.addActionListener(new ActionListener() {
+            public void actionPerformed(ActionEvent e) {
+                rateDoctor();
+            }
+        });
     }
 
-    public void addPatientEditListener(ActionListener listener) {
-        btnEdit.addActionListener(listener);
+    private void setupAppointmentTablePanel() {
+        // Create a panel to hold the data grid (JTable)
+        dataGridPanel = new JPanel();
+        dataGridPanel.setLayout(new BorderLayout());
+
+        // Set the preferred size for the table panel to avoid stretching
+        dataGridPanel.setPreferredSize(new Dimension(650, 500));  // Adjust height if needed
+
+        // Set up table to display appointment data
+        String[] columnNames = {"Mã Lịch", "Bác Sĩ", "Ngày Giờ", "Trạng Thái"};
+        Object[][] data = {};  // Data will be fetched from the database
+        appointmentTable = new JTable(data, columnNames);
+        JScrollPane scrollPane = new JScrollPane(appointmentTable);
+
+        dataGridPanel.add(scrollPane, BorderLayout.CENTER);
+
+        // Add the data grid panel to the content panel on the right side
+        contentPanel.add(dataGridPanel, BorderLayout.CENTER);
     }
 
-    public void addPatientDeleteListener(ActionListener listener) {
-        btnDelete.addActionListener(listener);
+    private void showAppointments() {
+        // Logic to fetch and display appointments in the data grid
+        JOptionPane.showMessageDialog(this, "Hiển thị lịch khám");
     }
 
-    public void addPatientClearListener(ActionListener listener) {
-        btnClear.addActionListener(listener);
+    private void bookAppointment() {
+        // Show popup to book a new appointment
+        JOptionPane.showMessageDialog(this, "Hiển thị form đặt lịch khám");
     }
 
-    public void addSortByNameListener(ActionListener listener) {
-        btnSortByName.addActionListener(listener);
+    private void handleCancelOrReschedule() {
+        // Show form to cancel or reschedule an appointment
+        JOptionPane.showMessageDialog(this, "Hiển thị form hủy/dời lịch khám");
     }
 
-    public void addSortByAddressListener(ActionListener listener) {
-        btnSortByAddress.addActionListener(listener);
+    private void rateDoctor() {
+        // Show form to rate a doctor
+        JOptionPane.showMessageDialog(this, "Hiển thị form đánh giá bác sĩ");
     }
 
-    public void addListPatientSelectionListener(ListSelectionListener listener) {
-        tblPatients.getSelectionModel().addListSelectionListener(listener);
+    private void showChangePasswordDialog() {
+        // Logic to show a password change dialog/form
+        JOptionPane.showMessageDialog(this, "Hiển thị form đổi mật khẩu");
+    }
+
+    private void logout() {
+        // Handle logout logic (e.g., return to login screen)
+        JOptionPane.showMessageDialog(this, "Đăng xuất thành công");
+        // You can add logic to go back to the login screen
+    }
+
+    public static void main(String[] args) {
+        SwingUtilities.invokeLater(() -> new PatientView().setVisible(true));
     }
 }
+
+
+

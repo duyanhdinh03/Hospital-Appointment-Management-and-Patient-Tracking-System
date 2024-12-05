@@ -19,10 +19,13 @@ public class UserDAO {
 
             if (rs.next()) {
                 User user = new User();
-                user.setId(rs.getInt("id"));
+                user.setUserId(rs.getInt("user_id"));
                 user.setUsername(rs.getString("username"));
                 user.setPassword(rs.getString("password"));
                 user.setRole(rs.getString("role"));
+                user.setFullName(rs.getString("full_name"));  // Assuming there's a full_name column
+                user.setEmail(rs.getString("email"));  // Assuming there's an email column
+                user.setPhoneNumber(rs.getString("phone_number"));  // Assuming there's an address column
                 return user;
             }
         } catch (SQLException e) {
@@ -30,4 +33,21 @@ public class UserDAO {
         }
         return null;
     }
+
+    public boolean updateUserPassword(int userId, String newPassword) {
+        String query = "UPDATE users SET password = ? WHERE id = ?";
+        try (Connection conn = DatabaseConnection.getConnection();
+             PreparedStatement stmt = conn.prepareStatement(query)) {
+
+            stmt.setString(1, newPassword);
+            stmt.setInt(2, userId);
+
+            int rowsUpdated = stmt.executeUpdate();
+            return rowsUpdated > 0;
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+        return false;
+    }
+
 }

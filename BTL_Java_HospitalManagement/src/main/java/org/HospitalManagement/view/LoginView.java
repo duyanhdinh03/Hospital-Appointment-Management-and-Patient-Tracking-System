@@ -14,7 +14,7 @@ public class LoginView extends JFrame {
         // Thiết lập JFrame
         setTitle("Đăng Nhập");
         setSize(400, 250);
-        setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
+        setDefaultCloseOperation(JFrame.HIDE_ON_CLOSE);
         setLocationRelativeTo(null); // Căn giữa màn hình
 
         JPanel panel = new JPanel(new GridBagLayout());
