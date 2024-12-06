@@ -1,24 +1,24 @@
 package org.HospitalManagement.model;
 
+
 import javax.xml.bind.annotation.XmlAccessType;
 import javax.xml.bind.annotation.XmlAccessorType;
+import javax.xml.bind.annotation.XmlElement;
 import javax.xml.bind.annotation.XmlRootElement;
-import java.io.Serializable;
 import java.util.List;
-
 
 @XmlRootElement(name = "patients")
 @XmlAccessorType(XmlAccessType.FIELD)
-public class PatientXML implements Serializable {
-    private static final long serialVersionUID = 1L;
+public class PatientXML {
 
-    private List<Patient> patients;
+    @XmlElement(name = "patient")
+    private List<Patient> patient;
 
-    public List<Patient> getPatients() {
-        return patients;
+    public List<Patient> getPatient() {
+        return patient ;
     }
 
-    public void setPatients(List<Patient> patients) {
-        this.patients = patients;
+    public void setPatient(List<Patient> patient) {
+        this.patient = patient;
     }
 }

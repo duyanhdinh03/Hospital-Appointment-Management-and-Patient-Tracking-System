@@ -1,5 +1,11 @@
 package org.HospitalManagement.model;
 
+import org.HospitalManagement.utils.LocalDateTimeAdapter;
+
+import javax.xml.bind.annotation.XmlElement;
+import javax.xml.bind.annotation.adapters.XmlJavaTypeAdapter;
+import java.time.LocalDateTime;
+
 public class User {
     private int userId;
     private String username;
@@ -8,6 +14,7 @@ public class User {
     private String fullName;
     private String email;
     private String phoneNumber;
+    private LocalDateTime lastLoginTime;
 
 
     public User(String username, String password, String role, String fullName, String email, String phoneNumber) {
@@ -52,7 +59,7 @@ public class User {
         this.role = role;
     }
 
-    public int getUserId(int id) {
+    public int getUserId() {
         return userId;
     }
 
@@ -83,4 +90,15 @@ public class User {
     public void setPhoneNumber(String phoneNumber) {
         this.phoneNumber = phoneNumber;
     }
+
+    @XmlElement
+    @XmlJavaTypeAdapter(LocalDateTimeAdapter.class)
+    public LocalDateTime getLastLoginTime() {
+        return lastLoginTime;
+    }
+
+    public void setLastLoginTime(LocalDateTime lastLoginTime) {
+        this.lastLoginTime = lastLoginTime;
+    }
+
 }

@@ -1,53 +1,121 @@
 package org.HospitalManagement.dao;
 
 import org.HospitalManagement.model.User;
-import org.HospitalManagement.utils.DatabaseConnection;
+import org.HospitalManagement.model.UserXML;
 
-import java.sql.Connection;
-import java.sql.PreparedStatement;
-import java.sql.ResultSet;
-import java.sql.SQLException;
+import javax.xml.bind.JAXBContext;
+import javax.xml.bind.Marshaller;
+import javax.xml.bind.Unmarshaller;
+import java.io.File;
+import java.io.InputStream;
+import java.util.ArrayList;
+import java.util.List;
+import java.util.Objects;
+import java.util.Optional;
+import java.util.stream.Collectors;
 
 public class UserDAO {
+    private static final String USER_FILE_NAME = "users.xml";
+    private List<User> users;
+
+    public UserDAO() {
+        this.users = readUsersFromFile();
+    }
+
+    // Đọc danh sách người dùng từ file XML
+    public List<User> readUsersFromFile() {
+        List<User> userList = new ArrayList<>();
+        try {
+            InputStream inputStream = getClass().getClassLoader().getResourceAsStream(USER_FILE_NAME);
+            if(inputStream != null) {
+                JAXBContext context = JAXBContext.newInstance(UserXML.class);
+                Unmarshaller unmarshaller = context.createUnmarshaller();
+                UserXML wrapper = (UserXML) unmarshaller.unmarshal(inputStream);
+                userList = wrapper.getUsers();
+            }
+            else {
+                System.err.println("File users.xml không được tìm thấy!");
+            }
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+        return userList;
+    }
+
+    // Lưu danh sách người dùng vào file XML
+    public void writeUsersToFile() {
+        try {
+            JAXBContext context = JAXBContext.newInstance(UserXML.class);
+            Marshaller marshaller = context.createMarshaller();
+            marshaller.setProperty(Marshaller.JAXB_FORMATTED_OUTPUT, true);
+            UserXML wrapper = new UserXML();
+            wrapper.setUsers(users);
+            marshaller.marshal(wrapper, new File(Objects.requireNonNull(getClass().getClassLoader().getResource(USER_FILE_NAME)).getFile()));
+        } catch (Exception e) {
+            System.err.println("Error writing user file: " + e.getMessage());
+            e.printStackTrace();
+        }
+    }
+
+    // Tìm người dùng theo username
     public User getUserByUsername(String username) {
-        String query = "SELECT * FROM users WHERE username = ?";
-        try (Connection conn = DatabaseConnection.getConnection();
-             PreparedStatement stmt = conn.prepareStatement(query)) {
-
-            stmt.setString(1, username);
-            ResultSet rs = stmt.executeQuery();
-
-            if (rs.next()) {
-                User user = new User();
-                user.setUserId(rs.getInt("user_id"));
-                user.setUsername(rs.getString("username"));
-                user.setPassword(rs.getString("password"));
-                user.setRole(rs.getString("role"));
-                user.setFullName(rs.getString("full_name"));  // Assuming there's a full_name column
-                user.setEmail(rs.getString("email"));  // Assuming there's an email column
-                user.setPhoneNumber(rs.getString("phone_number"));  // Assuming there's an address column
+        System.out.println("Danh sách user hiện tại: " + users.size());
+        for (User user : users) {
+            System.out.println("Checking user: " + user.getUsername());
+            if (user.getUsername().equals(username)) {
                 return user;
             }
-        } catch (SQLException e) {
-            e.printStackTrace();
         }
         return null;
     }
 
+    // Cập nhật mật khẩu người dùng
     public boolean updateUserPassword(int userId, String newPassword) {
-        String query = "UPDATE users SET password = ? WHERE id = ?";
-        try (Connection conn = DatabaseConnection.getConnection();
-             PreparedStatement stmt = conn.prepareStatement(query)) {
+        Optional<User> optionalUser = users.stream()
+                .filter(user -> user.getUserId() == userId)
+                .findFirst();
 
-            stmt.setString(1, newPassword);
-            stmt.setInt(2, userId);
-
-            int rowsUpdated = stmt.executeUpdate();
-            return rowsUpdated > 0;
-        } catch (SQLException e) {
-            e.printStackTrace();
+        if (optionalUser.isPresent()) {
+            User user = optionalUser.get();
+            user.setPassword(newPassword);
+            writeUsersToFile();
+            return true;
+        } else {
+            System.err.println("User with ID " + userId + " not found.");
+            return false;
         }
-        return false;
     }
 
+    // Thêm người dùng mới (kiểm tra trùng username)
+    public void addUser(User user) {
+        if (users.stream().anyMatch(u -> u.getUsername().equals(user.getUsername()))) {
+            System.err.println("Username already exists: " + user.getUsername());
+            return;
+        }
+        users.add(user);
+        writeUsersToFile();
+    }
+
+    // Xóa người dùng theo ID
+    public boolean deleteUser(int userId) {
+        boolean removed = users.removeIf(user -> user.getUserId() == userId);
+        if (removed) {
+            writeUsersToFile();
+        } else {
+            System.err.println("User with ID " + userId + " not found.");
+        }
+        return removed;
+    }
+
+    // Lấy danh sách người dùng theo vai trò
+    public List<User> getUsersByRole(String role) {
+        return users.stream()
+                .filter(user -> user.getRole().equalsIgnoreCase(role))
+                .collect(Collectors.toList());
+    }
+
+    // Lấy danh sách tất cả người dùng
+    public List<User> getAllUsers() {
+        return new ArrayList<>(users); // Trả về bản sao danh sách để tránh sửa đổi ngoài ý muốn
+    }
 }

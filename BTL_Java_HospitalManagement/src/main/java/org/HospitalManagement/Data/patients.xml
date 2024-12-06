@@ -1,0 +1,27 @@
+<patients>
+    <patient>
+        <patientID>1</patientID>
+        <userId>3</userId>
+        <name>Duy Anh</name>
+        <age>22</age>
+        <address>123 Street</address>
+        <phone>123456789</phone>
+        <dob>17/11/2003</dob>
+        <email>da@abc.com</email>
+        <gender>male</gender>
+        <appointmentHistory> </appointmentHistory>
+    </patient>
+
+    <patient>
+        <patientID>2</patientID>
+        <userId>4</userId>
+        <name>Yến Ly</name>
+        <age>22</age>
+        <address>222 Street</address>
+        <phone>876543215</phone>
+        <dob>30/10/2003</dob>
+        <email>yl@abc.com</email>
+        <gender>female</gender>
+        <appointmentHistory> </appointmentHistory>
+    </patient>
+</patients>

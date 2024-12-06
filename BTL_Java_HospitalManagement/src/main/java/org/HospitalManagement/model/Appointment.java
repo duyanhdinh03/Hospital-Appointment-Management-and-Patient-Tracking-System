@@ -1,5 +1,7 @@
 package org.HospitalManagement.model;
 
+import org.HospitalManagement.Enums.AppointmentStatus;
+
 import java.time.LocalDateTime;
 
 public class Appointment {
@@ -7,14 +9,16 @@ public class Appointment {
     private int patientId;
     private int doctorId;
     private LocalDateTime appointmentDate;
-    private String status;
+    private String roomNumber;
+    private AppointmentStatus status;
     private String notes;
 
-    public Appointment(int appointmentId, int patientId, int doctorId, LocalDateTime appointmentDate, String status, String notes) {
+    public Appointment(int appointmentId, int patientId, int doctorId, LocalDateTime appointmentDate, String roomNumber, AppointmentStatus status, String notes) {
         this.appointmentId = appointmentId;
         this.patientId = patientId;
         this.doctorId = doctorId;
         this.appointmentDate = appointmentDate;
+        this.roomNumber = roomNumber;
         this.status = status;
         this.notes = notes;
     }
@@ -51,11 +55,19 @@ public class Appointment {
         this.appointmentDate = appointmentDate;
     }
 
-    public String getStatus() {
+    public String getRoomNumber() {
+        return roomNumber;
+    }
+
+    public void setRoomNumber(String roomNumber) {
+        this.roomNumber = roomNumber;
+    }
+
+    public AppointmentStatus getStatus() {
         return status;
     }
 
-    public void setStatus(String status) {
+    public void setStatus(AppointmentStatus status) {
         this.status = status;
     }
 

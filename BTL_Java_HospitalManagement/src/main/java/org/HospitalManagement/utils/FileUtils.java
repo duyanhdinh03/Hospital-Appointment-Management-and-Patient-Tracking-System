@@ -7,31 +7,37 @@ import javax.xml.bind.Unmarshaller;
 import java.io.File;
 
 public class FileUtils {
-    public static void writeXMLtoFile(String fileName, Object object) {
-        try {
-            // tạo đối tượng JAXB Context
-            JAXBContext jaxbContext = JAXBContext.newInstance(object.getClass());
-            // Create đối tượng Marshaller
-            Marshaller jaxbMarshaller = jaxbContext.createMarshaller();
-            // formating
-            jaxbMarshaller.setProperty(Marshaller.JAXB_FORMATTED_OUTPUT, Boolean.TRUE);
-            // lưu nội dung XML vào file
-            File xmlFile = new File(fileName);
-            jaxbMarshaller.marshal(object, xmlFile);
-        } catch (JAXBException e) {
-            e.printStackTrace();
-        }
-    }
 
-    public static Object readXMLFile(String fileName, Class<?> clazz) {
+    // Đọc đối tượng từ file XML
+    public static Object readFromXML(String fileName, Class<?> clazz) {
         try {
-            File xmlFile = new File(fileName);
-            JAXBContext jaxbContext = JAXBContext.newInstance(clazz);
-            Unmarshaller jaxbUnmarshaller = jaxbContext.createUnmarshaller();
-            return jaxbUnmarshaller.unmarshal(xmlFile);
+            JAXBContext context = JAXBContext.newInstance(clazz);
+            Unmarshaller unmarshaller = context.createUnmarshaller();
+            File file = new File(fileName);
+            if (file.exists()) {
+                return unmarshaller.unmarshal(file);
+            } else {
+                System.err.println("File " + fileName + " không tồn tại!");
+            }
         } catch (JAXBException e) {
+            System.err.println("Lỗi khi đọc file XML: " + e.getMessage());
             e.printStackTrace();
         }
         return null;
+    }
+
+    // Ghi đối tượng vào file XML
+    public static <T> void writeToXML(String fileName, T data) {
+        try {
+            JAXBContext context = JAXBContext.newInstance(data.getClass());
+            Marshaller marshaller = context.createMarshaller();
+            marshaller.setProperty(Marshaller.JAXB_FORMATTED_OUTPUT, Boolean.TRUE); // Format file đẹp
+
+            File file = new File(fileName);
+            marshaller.marshal(data, file);
+        } catch (JAXBException e) {
+            System.err.println("Lỗi khi ghi file XML: " + e.getMessage());
+            e.printStackTrace();
+        }
     }
 }

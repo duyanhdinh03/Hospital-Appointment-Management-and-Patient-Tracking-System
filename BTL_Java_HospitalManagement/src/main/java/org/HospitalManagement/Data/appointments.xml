@@ -1,0 +1,11 @@
+<appointments>
+    <appointment>
+        <id>1</id>
+        <patient_id>1</patient_id>
+        <doctor_id>2</doctor_id>
+        <date>2024-12-10</date>
+        <time>09:00:00</time>
+        <status>CONFIRMED</status>
+        <room>A1</room>
+    </appointment>
+</appointments>

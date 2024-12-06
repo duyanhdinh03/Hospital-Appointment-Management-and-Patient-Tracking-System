@@ -7,6 +7,7 @@ import javax.swing.event.ListSelectionListener;
 import javax.swing.table.DefaultTableModel;
 import java.awt.*;
 import java.awt.event.ActionListener;
+import java.sql.Date;
 import java.util.List;
 
 public class DoctorView extends JFrame {
@@ -231,7 +232,7 @@ public class DoctorView extends JFrame {
                 patient.setPatientID(Integer.parseInt(txtId.getText()));
             }
             patient.setName(name);
-            patient.setDob(java.sql.Date.valueOf(dob));
+            patient.setDob(Date.valueOf(dob).toLocalDate());
             patient.setAddress(address);
             patient.setPhone(phone);
             patient.setGender(gender);

@@ -1,34 +1,32 @@
 package org.HospitalManagement.model;
 
-import javax.xml.bind.annotation.XmlAccessType;
-import javax.xml.bind.annotation.XmlAccessorType;
-import javax.xml.bind.annotation.XmlRootElement;
 import java.io.Serial;
 import java.io.Serializable;
+import java.time.LocalDate;
 import java.util.Date;
+import java.util.List;
 
-
-@XmlRootElement(name = "patient")
-@XmlAccessorType(XmlAccessType.FIELD)
 public class Patient implements Serializable {
     @Serial
     private static final long serialVersionUID = 1L;
 
     private int patientID;
+    private int userId;
     private String name;
     private byte age;
     private String address;
     private String phone;
-    private Date dob;
+    private LocalDate dob;
     private String email;
     private String gender;
-    private String medicalHistory;
+    private List<Appointment> appointmentHistory;
 
     public Patient() {
     }
 
-    public Patient(int patientID, String name, byte age, String address, String phone, Date dob, String email, String gender, String medicalHistory) {
+    public Patient(int patientID, int userId, String name, byte age, String address, String phone, LocalDate dob, String email, String gender, List<Appointment> appointmentHistory) {
         this.patientID = patientID;
+        this.userId = userId;
         this.name = name;
         this.age = age;
         this.address = address;
@@ -36,7 +34,7 @@ public class Patient implements Serializable {
         this.dob = dob;
         this.email = email;
         this.gender = gender;
-        this.medicalHistory = medicalHistory;
+        this.appointmentHistory = appointmentHistory;
     }
 
 
@@ -46,6 +44,14 @@ public class Patient implements Serializable {
 
     public void setPatientID(int patientID) {
         this.patientID = patientID;
+    }
+
+    public int getUserId() {
+        return userId;
+    }
+
+    public void setUserId(int userId) {
+        this.userId = userId;
     }
 
     public String getName() {
@@ -80,11 +86,11 @@ public class Patient implements Serializable {
         this.phone = phone;
     }
 
-    public Date getDob() {
+    public LocalDate getDob() {
         return dob;
     }
 
-    public void setDob(Date dob) {
+    public void setDob(LocalDate dob) {
         this.dob = dob;
     }
 
@@ -104,11 +110,12 @@ public class Patient implements Serializable {
         this.gender = gender;
     }
 
-    public String getMedicalHistory() {
-        return medicalHistory;
+
+    public List<Appointment> getAppointmentHistory() {
+        return appointmentHistory;
     }
 
-    public void setMedicalHistory(String medicalHistory) {
-        this.medicalHistory = medicalHistory;
+    public void setAppointmentHistory(List<Appointment> appointmentHistory) {
+        this.appointmentHistory = appointmentHistory;
     }
 }
