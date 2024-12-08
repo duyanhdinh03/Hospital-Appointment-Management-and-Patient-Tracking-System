@@ -47,17 +47,10 @@
         </dependency>
 
         <dependency>
-<<<<<<< HEAD
-            <groupId>com.sun.istack</groupId>
-            <artifactId>istack-commons-runtime</artifactId>
-            <version>3.0.12</version>
-=======
             <groupId>mysql</groupId>
             <artifactId>mysql-connector-java</artifactId>
             <version>8.0.28</version>
->>>>>>> origin/master
         </dependency>
-
     </dependencies>
 
 </project>

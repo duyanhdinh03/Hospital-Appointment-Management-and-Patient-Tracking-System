@@ -5,71 +5,48 @@ import java.awt.*;
 import java.awt.event.ActionListener;
 
 public class LoginView extends JFrame {
-    private JTextField txtUsername;
-    private JPasswordField txtPassword;
-    private JButton btnLogin;
-    private JLabel lblMessage;
+    private final JTextField usernameField;
+    private final JPasswordField passwordField;
+    private final JButton loginButton;
+    private final JLabel messageLabel;
 
     public LoginView() {
-        // Thiết lập JFrame
-        setTitle("Đăng Nhập");
-        setSize(400, 250);
-        setDefaultCloseOperation(JFrame.HIDE_ON_CLOSE);
-        setLocationRelativeTo(null); // Căn giữa màn hình
+        setTitle("Login");
+        setSize(300, 200);
+        setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
+        setLocationRelativeTo(null);
+        setLayout(new BorderLayout());
 
-        JPanel panel = new JPanel(new GridBagLayout());
-        GridBagConstraints gbc = new GridBagConstraints();
-        gbc.insets = new Insets(5, 5, 5, 5);
+        JPanel panel = new JPanel(new GridLayout(3, 2));
+        panel.add(new JLabel("Username:"));
+        usernameField = new JTextField();
+        panel.add(usernameField);
 
-        JLabel lblUsername = new JLabel("Username:");
-        gbc.gridx = 0;
-        gbc.gridy = 0;
-        panel.add(lblUsername, gbc);
+        panel.add(new JLabel("Password:"));
+        passwordField = new JPasswordField();
+        panel.add(passwordField);
 
-        txtUsername = new JTextField(20);
-        gbc.gridx = 1;
-        panel.add(txtUsername, gbc);
+        loginButton = new JButton("Login");
+        panel.add(loginButton);
 
-        JLabel lblPassword = new JLabel("Password:");
-        gbc.gridx = 0;
-        gbc.gridy = 1;
-        panel.add(lblPassword, gbc);
-
-        txtPassword = new JPasswordField(20);
-        gbc.gridx = 1;
-        panel.add(txtPassword, gbc);
-
-        btnLogin = new JButton("Login");
-        gbc.gridx = 1;
-        gbc.gridy = 2;
-        panel.add(btnLogin, gbc);
-
-        lblMessage = new JLabel("");
-        lblMessage.setForeground(Color.RED);
-        gbc.gridx = 1;
-        gbc.gridy = 3;
-        panel.add(lblMessage, gbc);
-
-        add(panel);
+        messageLabel = new JLabel("", JLabel.CENTER);
+        add(panel, BorderLayout.CENTER);
+        add(messageLabel, BorderLayout.SOUTH);
     }
 
-    // Thêm sự kiện cho nút Login
     public void addLoginListener(ActionListener listener) {
-        btnLogin.addActionListener(listener);
+        loginButton.addActionListener(listener);
     }
 
-    // Lấy thông tin username và password
     public String getUsername() {
-        return txtUsername.getText();
+        return usernameField.getText();
     }
 
     public String getPassword() {
-        return new String(txtPassword.getPassword());
+        return new String(passwordField.getPassword());
     }
 
-    // Hiển thị thông báo
-    public void showMessage(String message, boolean isError) {
-        lblMessage.setText(message);
-        lblMessage.setForeground(isError ? Color.RED : Color.GREEN);
+    public void showMessage(String message) {
+        messageLabel.setText(message);
     }
 }
