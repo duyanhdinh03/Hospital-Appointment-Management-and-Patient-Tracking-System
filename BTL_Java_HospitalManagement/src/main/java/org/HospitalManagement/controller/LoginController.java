@@ -80,7 +80,10 @@ public class LoginController {
     private void openRoleBasedView(String role, int userId) {
         switch (role.toUpperCase()) {
             case "PATIENT":
-                new PatientView(userId).setVisible(true);
+                PatientView pt = new PatientView(userId);
+                pt.setVisible(true);
+                PatientController patientController = new PatientController(pt, userId);
+                patientController.showPatientView();
                 break;
             case "DOCTOR":
                 // Triển khai DoctorView sau
