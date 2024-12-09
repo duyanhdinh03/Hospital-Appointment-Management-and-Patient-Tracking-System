@@ -4,9 +4,12 @@ import org.HospitalManagement.dao.AppointmentDAO;
 import org.HospitalManagement.view.patient.AppointmentList;
 import org.HospitalManagement.view.patient.PatientView;
 import org.HospitalManagement.model.Appointment;
+import org.HospitalManagement.view.patient.SubmitForm;
+
 import javax.swing.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import java.sql.Date;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -51,8 +54,31 @@ public class PatientController {
         patientView.addSubmitAppointmentListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
-                // Mở cửa sổ gửi đơn đăng ký lịch khám
-                JOptionPane.showMessageDialog(patientView, "Chức năng gửi đơn đăng ký lịch khám đang phát triển!");
+                // Hiển thị form đăng ký lịch khám
+                SubmitForm submitForm = new SubmitForm(patientView);
+                submitForm.addSubmitListener(new ActionListener() {
+                    @Override
+                    public void actionPerformed(ActionEvent event) {
+                        // Lấy patientId từ PatientView
+                        int patientId = patientView.getPatientId();
+                        Appointment appointment = submitForm.getAppointmentData(patientId);
+
+                        if (appointment == null) {
+                            JOptionPane.showMessageDialog(submitForm, "Thông tin không hợp lệ!");
+                            return;
+                        }
+
+                        boolean isInserted = appointmentDAO.createAppointment(appointment);
+                        if (isInserted) {
+                            JOptionPane.showMessageDialog(submitForm, "Đăng ký lịch khám thành công!");
+                            submitForm.dispose();
+                        } else {
+                            JOptionPane.showMessageDialog(submitForm, "Đăng ký lịch khám thất bại!");
+                        }
+                    }
+                });
+
+                submitForm.setVisible(true);
             }
         });
 

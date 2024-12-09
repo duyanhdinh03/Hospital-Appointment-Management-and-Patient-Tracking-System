@@ -6,7 +6,6 @@ import org.HospitalManagement.view.LoginView;
 import javax.swing.*;
 import javax.swing.table.DefaultTableModel;
 import java.awt.*;
-import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.util.List;
 
@@ -121,6 +120,14 @@ public class PatientView extends JFrame {
                     appointment.getFeedback()
             });
         }
+    }
+
+    public int getPatientId(){
+        return this.patientId;
+    }
+
+    public void setPatientId(int patientId) {
+        this.patientId = patientId;
     }
 
     public static void main(String[] args) {

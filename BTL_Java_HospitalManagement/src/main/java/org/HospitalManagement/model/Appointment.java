@@ -3,31 +3,30 @@ package org.HospitalManagement.model;
 import java.util.Date;
 
 public class Appointment {
-    private int id ;
-    private int patientId ;
-    private int doctorId ;
-    private String doctorName ;
-    private String patientName ;
-    private Date appointmentDate ;
+    private int id;
+    private int patientId;
+    private Integer doctorId;
+    private String doctorName;
+    private String patientName;
+    private Date appointmentDate;
     private String symptoms;
-    private String status ;
+    private String status;
     private String feedback;
 
-    public Appointment(int id, int patientId, int doctorId, String doctorName, String patientName, Date appointmentDate, String status, String feedback) {
+    public Appointment(int id, int patientId, Integer doctorId, String doctorName, String patientName, Date appointmentDate, String symptoms, String status, String feedback) {
         this.id = id;
         this.patientId = patientId;
         this.doctorId = doctorId;
         this.doctorName = doctorName;
         this.patientName = patientName;
         this.appointmentDate = appointmentDate;
+        this.symptoms = symptoms;
         this.status = status;
         this.feedback = feedback;
     }
 
     public Appointment() {
-
     }
-
 
     public int getId() {
         return id;
@@ -45,11 +44,11 @@ public class Appointment {
         this.patientId = patientId;
     }
 
-    public int getDoctorId() {
+    public Integer getDoctorId() {
         return doctorId;
     }
 
-    public void setDoctorId(int doctorId) {
+    public void setDoctorId(Integer doctorId) {
         this.doctorId = doctorId;
     }
 

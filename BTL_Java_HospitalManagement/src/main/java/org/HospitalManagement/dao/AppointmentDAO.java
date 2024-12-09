@@ -44,4 +44,39 @@ public class AppointmentDAO {
         return appointments;
     }
 
+
+    public boolean createAppointment(Appointment appointment) {
+        String sql = "INSERT INTO appointments (patient_id, doctor_id, appointment_date, symptoms, status, notes) " +
+                "VALUES (?,?,?,?,?,?)";
+        try (Connection connection = DatabaseConnection.getConnection();
+             PreparedStatement statement = connection.prepareStatement(sql)) {
+
+            // Kiểm tra xem doctorId có null không, nếu có thì thay thế bằng giá trị mặc định
+            Integer doctorId = appointment.getDoctorId();
+            if (doctorId == null) {
+                statement.setNull(2, java.sql.Types.INTEGER);
+            } else {
+                statement.setInt(2, doctorId);
+            }
+
+            statement.setInt(1, appointment.getPatientId());
+            statement.setDate(3, new java.sql.Date(appointment.getAppointmentDate().getTime()));
+            statement.setString(4, appointment.getSymptoms());
+            statement.setString(5, appointment.getStatus());
+            statement.setString(6, appointment.getFeedback());
+
+            int rowsInserted = statement.executeUpdate();
+            if (rowsInserted > 0) {
+                System.out.println("Lịch hẹn thêm thành công !!");
+                return true;
+            } else {
+                System.out.println("Lịch hẹn thêm thất bại !!");
+                return false;
+            }
+        } catch (SQLException e) {
+            e.printStackTrace();
+            return false;
+        }
+    }
+
 }
