@@ -76,6 +76,10 @@ public class SubmitForm extends JDialog {
         this.patientId = patientId;
     }
 
+    public int getPatientId(){
+        return this.patientId;
+    }
+
     public Appointment getAppointmentData(int patientId) {
         Appointment appointment = new Appointment();
         try {

@@ -92,6 +92,12 @@ public class LoginView extends JFrame {
         return new String(passwordField.getPassword());
     }
 
+    public void resetFields() {
+        usernameField.setText("");
+        passwordField.setText("");
+        messageLabel.setText("");
+    }
+
     public void showMessage(String message) {
         messageLabel.setText(message);
     }

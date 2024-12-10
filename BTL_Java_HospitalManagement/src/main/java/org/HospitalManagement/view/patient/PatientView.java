@@ -16,6 +16,7 @@ public class PatientView extends JFrame {
     private JButton submitAppointmentButton;
     private JButton sendFeedbackButton;
     private JButton ViewHistoryButton;
+    private JButton logoutButton;
     private JLabel messageLabel;
     private JTable appointmentsTable;
     private DefaultTableModel tableModel;
@@ -48,7 +49,7 @@ public class PatientView extends JFrame {
         sendFeedbackButton = new JButton("Gửi đánh giá");
         ViewHistoryButton = new JButton("Xem lịch sử");
         changePasswordButton = new JButton("Đổi mật khẩu");
-        JButton btnLogout = new JButton("Đăng xuất");
+        logoutButton = new JButton("Đăng xuất");
 
         // Add buttons to panel
         panel.add(messageLabel);
@@ -57,7 +58,7 @@ public class PatientView extends JFrame {
         panel.add(sendFeedbackButton);
         panel.add(ViewHistoryButton);
         panel.add(changePasswordButton);
-        panel.add(btnLogout);
+        panel.add(logoutButton);
 
 
         //Danh sach lich hen
@@ -71,14 +72,6 @@ public class PatientView extends JFrame {
         // Add panel to frame
         add(panel, BorderLayout.CENTER);
 
-        // Event handling
-        btnLogout.addActionListener(e -> logout());
-    }
-
-    private void logout() {
-        JOptionPane.showMessageDialog(this, "Đăng xuất thành công!");
-        dispose();
-        new LoginView().setVisible(true); // Quay lại màn hình đăng nhập
     }
 
     // Các phương thức gắn sự kiện
@@ -94,12 +87,16 @@ public class PatientView extends JFrame {
         submitAppointmentButton.addActionListener(listener);
     }
 
-    public void addCancelOrRescheduleListener(ActionListener listener) {
+    public void addViewHistoryListener(ActionListener listener) {
+        ViewHistoryButton.addActionListener(listener);
+    }
+
+    public void sendFeedbackListener(ActionListener listener) {
         sendFeedbackButton.addActionListener(listener);
     }
 
-    public void addViewHistoryListener(ActionListener listener) {
-        ViewHistoryButton.addActionListener(listener);
+    public void LogoutListener(ActionListener listener){
+        logoutButton.addActionListener(listener);
     }
 
     // Hiển thị thông báo

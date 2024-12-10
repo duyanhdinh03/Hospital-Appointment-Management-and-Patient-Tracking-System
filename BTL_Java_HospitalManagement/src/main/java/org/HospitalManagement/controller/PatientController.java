@@ -1,16 +1,16 @@
 package org.HospitalManagement.controller;
 
 import org.HospitalManagement.dao.AppointmentDAO;
-import org.HospitalManagement.view.patient.AppointmentList;
-import org.HospitalManagement.view.patient.PatientView;
+import org.HospitalManagement.view.LoginView;
+import org.HospitalManagement.view.patient.*;
 import org.HospitalManagement.model.Appointment;
-import org.HospitalManagement.view.patient.SubmitForm;
+import org.HospitalManagement.view.patient.feedback.AppointmentFeedbackForm;
+import org.HospitalManagement.view.patient.feedback.FeedbackSelectionForm;
+import org.HospitalManagement.view.patient.feedback.GeneralFeedbackForm;
 
 import javax.swing.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
-import java.sql.Date;
-import java.util.ArrayList;
 import java.util.List;
 
 public class PatientController {
@@ -41,16 +41,17 @@ public class PatientController {
             }
         });
 
-        // Lắng nghe sự kiện khi nhấn nút Đổi mật khẩu
+        //  Đổi mật khẩu
         patientView.addChangePasswordListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
-                // Mở cửa sổ đổi mật khẩu
-                JOptionPane.showMessageDialog(patientView, "Chức năng đổi mật khẩu đang phát triển!");
+                patientView.setVisible(false);
+                ChangePassword changePassword = new ChangePassword(patientId, patientView);
+                changePassword.setVisible(true);
             }
         });
 
-        // Lắng nghe sự kiện khi nhấn nút Gửi đơn đăng ký lịch khám
+        // Gửi đơn đăng ký lịch khám
         patientView.addSubmitAppointmentListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
@@ -82,21 +83,52 @@ public class PatientController {
             }
         });
 
-        // Lắng nghe sự kiện khi nhấn nút Hủy / Dời lịch hẹn
-        patientView.addCancelOrRescheduleListener(new ActionListener() {
+        // Gửi đánh giá
+        patientView.sendFeedbackListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
-                // Mở cửa sổ hủy/dời lịch hẹn
-                JOptionPane.showMessageDialog(patientView, "Chức năng hủy/dời lịch hẹn đang phát triển!");
+                patientView.setVisible(false);
+                FeedbackSelectionForm selectionForm = new FeedbackSelectionForm(patientId, patientView);
+                selectionForm.setVisible(true);
             }
         });
 
-        // Lắng nghe sự kiện khi nhấn nút Xem lịch sử đăng ký lịch khám
+        //  Xem lịch sử đăng ký lịch khám
         patientView.addViewHistoryListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
-                // Hiển thị lịch sử các đơn đăng ký lịch khám
-                JOptionPane.showMessageDialog(patientView, "Đang hiển thị lịch sử các đơn đăng ký!");
+                patientView.setVisible(false);
+                AppointmentHistory appointmentHistory = new AppointmentHistory(patientId, patientView);
+                appointmentHistory.setVisible(true);
+            }
+        });
+
+        patientView.LogoutListener(new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                patientView.dispose();
+
+                LoginView newloginView = new LoginView();
+                LoginController loginController = new LoginController(newloginView);
+                newloginView.resetFields();
+
+                newloginView.addLoginListener(new ActionListener() {
+                    @Override
+                    public void actionPerformed(ActionEvent e) {
+                        String username = newloginView.getUsername();
+                        String password = newloginView.getPassword();
+
+                        String result = LoginController.handleLogin(username, password);
+
+                        if (result.equals("SUCCESS")) {
+                            newloginView.dispose();
+                        } else {
+                            JOptionPane.showMessageDialog(newloginView, result, "Lỗi", JOptionPane.ERROR_MESSAGE);
+                        }
+                    }
+                });
+
+                newloginView.setVisible(true);
             }
         });
     }
