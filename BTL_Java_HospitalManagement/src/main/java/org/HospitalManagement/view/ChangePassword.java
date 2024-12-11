@@ -1,6 +1,8 @@
-package org.HospitalManagement.view.patient;
+package org.HospitalManagement.view;
 
-import org.HospitalManagement.dao.PatientDAO;
+import org.HospitalManagement.controller.LoginController;
+import org.HospitalManagement.dao.UserDAO;
+import org.HospitalManagement.view.patient.PatientView;
 
 import javax.swing.*;
 import java.awt.*;
@@ -13,10 +15,10 @@ public class ChangePassword extends JFrame {
     private JPasswordField confirmPasswordField;  // Thêm trường xác nhận mật khẩu
     private JButton changePasswordButton;
     private JButton backButton;
-    private int patientId;
+    private int userId;
 
-    public ChangePassword(int patientId, PatientView patientView) {
-        this.patientId = patientId;
+    public ChangePassword(int userId, PatientView patientView) {
+        this.userId = userId;
 
         setTitle("Đổi mật khẩu");
         setSize(400, 250);  // Tăng kích thước cho phù hợp
@@ -67,17 +69,16 @@ public class ChangePassword extends JFrame {
         }
 
         if (!newPassword.equals(confirmPassword)) {
-            JOptionPane.showMessageDialog(this, "Mật khẩu mới và xác nhận mật khẩu không khớp.");
+            JOptionPane.showMessageDialog(this, "Mật khẩu mới và xác nhận không khớp.");
             return;
         }
 
-        PatientDAO patientDAO = new PatientDAO();
-        boolean success = patientDAO.changePassword(patientId, oldPassword, newPassword);
-        if (success) {
-            JOptionPane.showMessageDialog(this, "Đổi mật khẩu thành công.");
+        if (UserDAO.changePassword(userId, oldPassword, newPassword)) {
+            JOptionPane.showMessageDialog(this, "Đổi mật khẩu thành công!");
             dispose();
+            new  LoginView().setVisible(true);
         } else {
-            JOptionPane.showMessageDialog(this, "Mật khẩu cũ không đúng.");
+            JOptionPane.showMessageDialog(this, "Đổi mật khẩu thất bại!");
         }
     }
 
