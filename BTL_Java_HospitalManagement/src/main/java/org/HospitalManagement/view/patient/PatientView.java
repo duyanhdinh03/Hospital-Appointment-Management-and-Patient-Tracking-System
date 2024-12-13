@@ -28,7 +28,7 @@ public class PatientView extends JFrame {
 
     private void initUI() {
         setTitle("Patient Dashboard");
-        setSize(400, 300);
+        setSize(800, 600);
         setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
         setLocationRelativeTo(null);
 

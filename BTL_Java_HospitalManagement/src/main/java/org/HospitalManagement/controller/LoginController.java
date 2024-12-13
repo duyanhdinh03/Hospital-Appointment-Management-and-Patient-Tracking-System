@@ -1,6 +1,7 @@
 package org.HospitalManagement.controller;
 
 import org.HospitalManagement.view.LoginView;
+import org.HospitalManagement.view.doctor.DoctorView;
 import org.HospitalManagement.view.patient.PatientView;
 
 import javax.swing.*;
@@ -34,6 +35,13 @@ public class LoginController {
                 } else {
                     JOptionPane.showMessageDialog(loginView, result, "Lỗi", JOptionPane.ERROR_MESSAGE);
                 }
+            }
+        });
+
+        loginView.addRegisterListener(new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+
             }
         });
     }
@@ -91,8 +99,10 @@ public class LoginController {
                 patientController.showPatientView();
                 break;
             case "DOCTOR":
-                // Triển khai DoctorView sau
-                JOptionPane.showMessageDialog(null, "Doctor view chưa triển khai!");
+                DoctorView dt = new DoctorView(userId);
+                dt.setVisible(true);
+                DoctorController doctorController = new DoctorController(dt, userId);
+                doctorController.showDoctorView();
                 break;
             case "ADMIN":
                 // Triển khai AdminView sau

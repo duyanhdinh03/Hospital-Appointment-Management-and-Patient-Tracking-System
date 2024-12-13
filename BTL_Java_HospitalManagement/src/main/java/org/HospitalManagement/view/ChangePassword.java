@@ -1,8 +1,6 @@
 package org.HospitalManagement.view;
 
-import org.HospitalManagement.controller.LoginController;
 import org.HospitalManagement.dao.UserDAO;
-import org.HospitalManagement.view.patient.PatientView;
 
 import javax.swing.*;
 import java.awt.*;
@@ -10,52 +8,97 @@ import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 
 public class ChangePassword extends JFrame {
-    private JPasswordField oldPasswordField;
-    private JPasswordField newPasswordField;
-    private JPasswordField confirmPasswordField;  // Thêm trường xác nhận mật khẩu
-    private JButton changePasswordButton;
-    private JButton backButton;
-    private int userId;
+    private final JPasswordField oldPasswordField;
+    private final JPasswordField newPasswordField;
+    private final JPasswordField confirmPasswordField;  // Thêm trường xác nhận mật khẩu
+    private final int userId;
 
-    public ChangePassword(int userId, PatientView patientView) {
+    public ChangePassword(int userId, JFrame previousView) {
         this.userId = userId;
 
         setTitle("Đổi mật khẩu");
-        setSize(400, 250);  // Tăng kích thước cho phù hợp
-        setLayout(new GridLayout(4, 2, 10, 10));  // Cập nhật grid layout
-        setLocation(1,1);
+        setSize(800, 600);  // Tăng kích thước cho phù hợp
+        setLayout(new GridBagLayout());
+        GridBagConstraints gbc = new GridBagConstraints();
+        setLocationRelativeTo(null);  // Hiển thị form ở giữa màn hình
+        Font font = new Font("Arial", Font.PLAIN, 14);
+
         // Mật khẩu cũ
-        add(new JLabel("Mật khẩu cũ:"));
-        oldPasswordField = new JPasswordField();
-        add(oldPasswordField);
+        JLabel oldPasswordLabel = new JLabel("Mật khẩu cũ:");
+        oldPasswordLabel.setFont(font);
+        gbc.gridx = 0;
+        gbc.gridy = 0;
+        gbc.anchor = GridBagConstraints.WEST;
+        gbc.fill = GridBagConstraints.NONE;  // Không cho phép fill
+        add(oldPasswordLabel, gbc);
+
+        oldPasswordField = new JPasswordField(20);
+        oldPasswordField.setFont(font);
+        gbc.gridx = 1;
+        gbc.gridy = 0;
+        gbc.fill = GridBagConstraints.HORIZONTAL; // Cho phép fill ngang
+        gbc.anchor = GridBagConstraints.WEST;  // Giữ anchor bên trái
+        add(oldPasswordField, gbc);
 
         // Mật khẩu mới
-        add(new JLabel("Mật khẩu mới:"));
-        newPasswordField = new JPasswordField();
-        add(newPasswordField);
+        JLabel newPasswordLabel = new JLabel("Mật khẩu mới:");
+        newPasswordLabel.setFont(font);
+        gbc.gridx = 0;
+        gbc.gridy = 1;
+        gbc.fill = GridBagConstraints.NONE;
+        add(newPasswordLabel, gbc);
+
+        newPasswordField = new JPasswordField(20);
+        newPasswordField.setFont(font);
+        gbc.gridx = 1;
+        gbc.gridy = 1;
+        gbc.fill = GridBagConstraints.HORIZONTAL;
+        add(newPasswordField, gbc);
 
         // Xác nhận mật khẩu mới
-        add(new JLabel("Xác nhận mật khẩu mới:"));
-        confirmPasswordField = new JPasswordField();
-        add(confirmPasswordField);
+        JLabel confirmPasswordLabel = new JLabel("Xác nhận mật khẩu:");
+        confirmPasswordLabel.setFont(font);
+        gbc.gridx = 0;
+        gbc.gridy = 2;
+        gbc.fill = GridBagConstraints.NONE;
+        add(confirmPasswordLabel, gbc);
+
+        confirmPasswordField = new JPasswordField(20);
+        confirmPasswordField.setFont(font);
+        gbc.gridx = 1;
+        gbc.gridy = 2;
+        gbc.fill = GridBagConstraints.HORIZONTAL;
+        add(confirmPasswordField, gbc);
 
         // Nút đổi mật khẩu
-        changePasswordButton = new JButton("Đổi mật khẩu");
+        JButton changePasswordButton = new JButton("Đổi mật khẩu");
+        changePasswordButton.setFont(font);
         changePasswordButton.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
                 changePassword();
             }
         });
-        add(changePasswordButton);
+        gbc.gridx = 0;
+        gbc.gridy = 3;
+        gbc.gridwidth = 2;  // Nút chiếm toàn bộ chiều rộng
+        gbc.fill = GridBagConstraints.NONE;  // Không cho phép fill
+        gbc.anchor = GridBagConstraints.CENTER; // Căn giữa
+        add(changePasswordButton, gbc);
 
         // Nút quay lại
-        backButton = new JButton("Quay lại");
+        JButton backButton = new JButton("Quay lại");
+        backButton.setFont(font);
         backButton.addActionListener(e -> {
             dispose();
-            patientView.setVisible(true); // Quay lại PatientView
+            previousView.setVisible(true); // Quay lại PatientView
         });
-        add(backButton);
+        gbc.gridx = 0;
+        gbc.gridy = 4;
+        gbc.gridwidth = 2;
+        gbc.fill = GridBagConstraints.NONE;
+        gbc.anchor = GridBagConstraints.CENTER;
+        add(backButton, gbc);
     }
 
     private void changePassword() {
@@ -76,7 +119,15 @@ public class ChangePassword extends JFrame {
         if (UserDAO.changePassword(userId, oldPassword, newPassword)) {
             JOptionPane.showMessageDialog(this, "Đổi mật khẩu thành công!");
             dispose();
-            new  LoginView().setVisible(true);
+
+            if (LoginView.instance != null) {
+                LoginView.instance.setVisible(true);
+            } else {
+                LoginView loginView = new LoginView();
+                LoginView.instance = loginView;
+                loginView.resetFields();
+                loginView.setVisible(true);
+            }
         } else {
             JOptionPane.showMessageDialog(this, "Đổi mật khẩu thất bại!");
         }

@@ -99,4 +99,10 @@ public class Appointment {
     public void setSymptoms(String symptoms) {
         this.symptoms = symptoms;
     }
+
+    public void setDate(java.sql.Date date) {
+        this.appointmentDate = date;
+    }
+
+
 }

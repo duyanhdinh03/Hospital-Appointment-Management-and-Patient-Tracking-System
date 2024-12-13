@@ -1,7 +1,6 @@
 package org.HospitalManagement.controller;
 
 import org.HospitalManagement.dao.AppointmentDAO;
-import org.HospitalManagement.dao.UserDAO;
 import org.HospitalManagement.view.ChangePassword;
 import org.HospitalManagement.view.LoginView;
 import org.HospitalManagement.view.patient.*;
@@ -45,7 +44,7 @@ public class PatientController {
         patientView.addChangePasswordListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
-                patientView.setVisible(false);
+                patientView.dispose();
                 ChangePassword changePassword = new ChangePassword(patientId, patientView);
                 changePassword.setVisible(true);
             }

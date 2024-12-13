@@ -10,6 +10,7 @@ public class LoginView extends JFrame {
     private final JButton loginButton;
     private final JButton registerButton;
     private final JLabel messageLabel;
+    public static LoginView instance;
 
     public LoginView() {
         setTitle("Login");
@@ -72,6 +73,8 @@ public class LoginView extends JFrame {
         add(contentPanel, BorderLayout.CENTER);
         add(buttonPanel, BorderLayout.SOUTH);
         add(messageLabel, BorderLayout.NORTH);
+
+        instance = this ;
     }
 
     // Phương thức để gắn sự kiện cho nút Login
